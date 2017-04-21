@@ -1,9 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 
 namespace BalancedBrackets
 {
-
     public class Bracket
     {
         public char Type;
@@ -27,7 +26,6 @@ namespace BalancedBrackets
             return false;
         }
     }
-
 
     class BalancedBrackets
     {
@@ -76,7 +74,6 @@ namespace BalancedBrackets
                 Console.WriteLine("Success");
             else
                 Console.WriteLine(answer);
-
         }
     }
 }
