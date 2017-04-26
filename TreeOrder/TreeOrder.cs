@@ -1,49 +1,145 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace TreeOrders
 {
-    class TreeOrder
+    /*
+        Input:
+        5
+        4  1  2
+        2  3  4
+        5 -1 -1
+        1 -1 -1
+        3 -1 -1
+
+           4
+          / \
+         2   5
+        / \
+       1   3
+
+        Output:
+        1 2 3 4 5
+        4 2 1 3 5
+        1 3 2 5 4
+    */
+
+    internal class TreeOrder
     {
-        int n;
-        int[] key, left, right;
+        private int n;
+        private int[] _key;
+        private int[] _left;
+        private int[] _right;
+
         public void Read()
         {
             n = Convert.ToInt32(Console.ReadLine());
-            key = new int[n];
-            left = new int[n];
-            right = new int[n];
+            _key = new int[n];
+            _left = new int[n];
+            _right = new int[n];
 
-            int[] temp = new int[3];
-            for (int i = 0; i < n; i++)
+            var temp = new int[3];
+            for (var i = 0; i < n; i++)
             {
                 var readLine = Console.ReadLine();
                 if (readLine != null)
                 {
                     temp = Array.ConvertAll(readLine.Split(), int.Parse);
-                    key[i] = temp[0];
-                    left[i] = temp[1];
-                    right[i] = temp[2];
+                    _key[i] = temp[0];
+                    _left[i] = temp[1];
+                    _right[i] = temp[2];
                 }
             }
         }
 
         public List<int> InOrder()
         {
-            List<int> result = new List<int> { 0 };
+            int index = 0;
+            List<int> result = new List<int>();
+            Stack<int> stack = new Stack<int>();
+
+            while (true)
+            {
+                if (index != -1)
+                {
+                    stack.Push(index);
+                    index = _left[index];
+                }
+                else if(stack.Count > 0)
+                {
+                    index = stack.Pop();
+                    result.Add(_key[index]);
+                    index = _right[index];
+                }
+                else
+                {
+                    break;
+                }
+            }
             return result;
         }
 
         public List<int> PreOrder()
         {
-            List<int> result = new List<int> {0};
+            int index = 0;
+            List<int> result = new List<int>();
+            Stack<int> stack = new Stack<int>();
+
+            while (true)
+            {
+                if (index != -1)
+                {
+                    result.Add(_key[index]);
+                    stack.Push(index);
+                    index = _left[index];
+                }
+                else if (stack.Count > 0)
+                {
+                    index = stack.Pop();                    
+                    index = _right[index];
+                }
+                else
+                {
+                    break;
+                }
+            }
             return result;
         }
 
+        /*
+         * PostOrder is a bit different than the rest traversals          
+         */
         public List<int> PostOrder()
         {
-            List<int> result = new List<int> { 0 };
+            int index = 0;
+            List<int> result = new List<int>();
+            Stack<int> stack = new Stack<int>();
+            int lastNodeVisited = -1;
+
+            while (true)
+            {
+                if (index != -1)
+                {                    
+                    stack.Push(index);
+                    index = _left[index];
+                }
+                else if (stack.Count > 0)
+                {
+                    int peek = stack.Peek();                    
+                    // if right node child exists and traversing node from left child, then move right
+                    if (_right[peek] != -1 && lastNodeVisited != _right[peek])
+                        index = _right[peek];
+                    else
+                    {
+                        result.Add(_key[peek]);
+                        index = lastNodeVisited = stack.Pop();
+                    }
+                }
+                else
+                {
+                    break;
+                }
+            }
             return result;
         }
 
@@ -51,7 +147,7 @@ namespace TreeOrders
         {
             foreach (var integer in integers)
             {
-                Console.Write(integer);
+                Console.Write(integer + " ");
             }
             Console.WriteLine();
         }
