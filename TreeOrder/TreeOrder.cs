@@ -111,35 +111,29 @@ namespace TreeOrders
          */
         public List<int> PostOrder()
         {
-            int index = 0;
+            // Using two stacks            
             List<int> result = new List<int>();
-            Stack<int> stack = new Stack<int>();
-            int lastNodeVisited = -1;
+            Stack<int> stack1 = new Stack<int>();
+            Stack<int> stack2 = new Stack<int>();            
 
-            while (true)
+            stack1.Push(0);
+
+            while (stack1.Count > 0)
             {
-                if (index != -1)
-                {                    
-                    stack.Push(index);
-                    index = _left[index];
-                }
-                else if (stack.Count > 0)
-                {
-                    int peek = stack.Peek();                    
-                    // if right node child exists and traversing node from left child, then move right
-                    if (_right[peek] != -1 && lastNodeVisited != _right[peek])
-                        index = _right[peek];
-                    else
-                    {
-                        result.Add(_key[peek]);
-                        index = lastNodeVisited = stack.Pop();
-                    }
-                }
-                else
-                {
-                    break;
-                }
+                int index = stack1.Pop();
+                stack2.Push(_key[index]);
+
+                int leftIndex = _left[index];
+                int rightIndex = _right[index];
+
+                if (leftIndex != -1)
+                    stack1.Push(leftIndex);
+                if (rightIndex != -1)
+                    stack1.Push(rightIndex);
             }
+
+            while (stack2.Count > 0)
+                result.Add(stack2.Pop());
             return result;
         }
 
